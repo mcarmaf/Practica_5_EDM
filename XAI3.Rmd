@@ -90,7 +90,6 @@ TIP: Use geom_tile() to generate the 2D plot. Set width and height to avoid hole
 
 Interpret the results.
 
-
 ```{r}
 
 sampled <- sample_n(days_since, 40)
@@ -108,7 +107,20 @@ for(i in 1:nrow(th)){
   th[["p"]][i] <- sum(sal) / nr
 }
 
+ggplot(th, aes(x=temp, y=hum)) + geom_tile(aes(fill = p, width = 10, height = 15)) + geom_rug(alpha = 0.01) + xlab("Temperature") + ylab("Humidity") + scale_fill_gradient(name = "Number of bikes")
+
 ```
+**Conclusiones PDP 2D**
+
+Del siguiente gráfico podemos observar algunos efectos con bastante lógica:
+
+Primero, observando la variable temperatura por separado (es decir, sin su interacción con la humedad), vemos que las temperaturas bajas afectan notablemente al alquiler de bicicletas, disminuyendo notablemente este.Esto puede observarse viendo los colores correspondientes a las temperaturas entre -10 y 8. Vemos que en ese rango, el color del área que cubre ese trozo de gráfico es mucho más azul que el resto. Aunque si que es verdad que no hay muchas observaciones entorno a estas temperaturas, tiene lógica que en ese rango de temperaturas se vendan menos bicicletas.
+
+Observando la humedad por separado, observamos que humedades altas también contribuyen a un menor alquiler de bicicletas, lo cual también casa con el sentido común. Esto puede observarse observando que los colores correspondientes a las humedades entre 80 y 100 son más oscuros. Como antes, se observan menos observaciones en estos rangos de humedad, pero aun así, las conclusiones parecen lógicas.
+
+Posiblemente, una de las causas por las que se observan menos observaciones en estos dos rangos (mucho frío o mucha humedad) es precisamente por que dados estos fenñomenos metereológicos el alqiuiiler de bicis desciende bruscamente.
+
+Observando las dos variables conjuntamente, observamos que la intersección entre los dos rangos comentados con anterioridad es la zona más azul, donde se bate el record de menos bicicletas vendidas. Por el contrario, se observa que para temperaturas mayores de 8 grados (aproximadamente) y humedades menores de 80. el alquiler de bicis aumenta drásticamente, siendo máximo en una temperatura entre 20 y 30 grados y una humedad entre 58 y 20 (puede observarse que es la zona donde más individuos hay lo cual encaja con la conclusión a la que hemos llegado).
 
 
 ## EXERCISE:
