@@ -1,6 +1,8 @@
 ---
-title: "XAI 3: Model-Agnostic methods"
-output: html_notebook
+title: 'XAI 3: Model-Agnostic methods'
+output:
+  html_document:
+    df_print: paged
 ---
 
 # Borja Esteve Molner
