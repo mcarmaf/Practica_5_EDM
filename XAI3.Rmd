@@ -136,26 +136,38 @@ Analyse the influence of **bedrooms, bathrooms, sqft_living** and **floors** on 
 
 
 ```{r}
-
+library(randomForest)
 d <- read.csv("kc_house_data.csv")
-
 sampled <- sample_n(d, 1000)
-
 sampled <- select(sampled, bedrooms, bathrooms, sqft_living, sqft_lot, floors, yr_built, price)
-
-rf <- rfsrc(price~., data=sampled)
-
+rf <- randomForest(price~., data=sampled)
 results <- select(sampled, bedrooms, bathrooms, sqft_living, floors, price)
 nr <- nrow(sampled)
 for(c in names(results)[1:4])
 {
-  for(i in 1:nr){
-    r <- sampled
-    r[[c]] <- sampled[[c]][i]
-    sal <- predict(rf, r)$predicted
-    results[[c]][i] <- sum(sal) / nr
-  }
+for(i in 1:nr){
+r <- sampled
+r[[c]] <- sampled[[c]][i]
+sal <- predict(rf, r)
+results[[c]][i] <- sum(sal) / nr
 }
-
+}
+p1 <- ggplot(sampled, aes(x=bedrooms, y=results$bedrooms)) + geom_line() + geom_rug(alpha = 0.1, sides = "b") + ylab("Prediction") + xlab("Bedrooms")
+p2 <- ggplot(sampled, aes(x=bathrooms, y=results$bathrooms)) + geom_line() + geom_rug(alpha = 0.1, sides = "b")+ xlab("Bathrooms")
+p3 <- ggplot(sampled, aes(x=sqft_living, y=results$sqft_living)) + geom_line() + geom_rug(alpha = 0.1, sides = "b")+ xlab("Sqft Living")
+p4 <- ggplot(sampled, aes(x=floors, y=results$floors)) + geom_line() + geom_rug(alpha = 0.1, sides = "b")+ xlab("Floors")
+subplot(p1,p2,p3,p4, shareX = FALSE, titleX = TRUE)
 ```
+***Bedrooms:*** En esta variable existe un problema importante que afecta a la forma del plot, que es el número de casos disponibles para cada número. Podemos ver que hay muchos o bastantes valores entre las 0 y 10 habitaciones, pero luego se despunta hacia más de 30 y los valores se vuelven imprecisos. En cuanto a la interpretación, parece darse el caso de que a más habitaciones más barata es la casa, o menor es el precio predicho, aunque al observar los valores vemos que las variaciones nunca salen de los intervalos de los 500.000. Esto parece que no tiene sentido lógico, pero al ver los valores entre los que oscila el precio se puede llegar a ignorar. En el caso de las más de 30 habitaciones el precio crece ligeramente, pero no alcanza el del número previo de precios.
 
+
+
+***Bathrooms:*** En bathrooms si que tenemos más casos distribuidos para todos los valores, centrados sobretodo en los valores medios. A la hora de interpretar, parece bastante sensato asumir que el precio aumenta proporcionalmente al número de baños, con algunos tramos sin mucha subida pero sin romper del todo el patrón. En comparación a la anterior variable vemos que las escalas de precio son bastante más variadas y distantes entre extremos, lo cual nos lleva a pensar que se el número de baños afecta más gravemente a los valores de precio que el número de habitaciones.
+
+
+
+***Sqft Living:*** En esta variable vemos la relación proporcional que observábamos antes pero de forma más clara y uniforme. Es posible que el hecho de que la variable tenga muchas más opciones de valores y unos casos muy bien distribuidos ayude a esta observación. Hay dos comentarios que se pueden realizar interpretando esta gráfica, el primero siendo que la distribución de casos empieza a decrecer al aumentar el valor de la variable, por lo que la interpretación puede no ser del todo correcta. El segundo comentario es que las escalas de precio a las que aumenta son aún mayores que en los anteriores, por lo que se puede interpretar que la variable Sqft Living tiene una influencia muy potente sobre el precio final predicho.
+
+
+
+***Floors:*** Finalmente, en el caso de Floors encontramos una gráfica con propiedades similares a las de la primera variable bedrooms, pero con un plot distinto. De nuevo encontramos que todos los casos están bien distribuidos entre los posibles valores registrados de pisos, y que las escalas de valores no se alejan demasiado del rango de los 500.000, por lo que tampoco influye excesivamente al precio. La línea representada nos dice que se repite la relación proporcional de la variable con el precio, siendo que a más pisos más aumenta el precio del hogar.
