@@ -3,6 +3,10 @@ title: "XAI 3: Model-Agnostic methods"
 output: html_notebook
 ---
 
+# Borja Esteve Molner
+# Guillermo Ferrando Muñoz
+# Marcos Carbonell Mafé
+
 ## EXERCISE:
 
 Apply PDP to the regression example of predicting bike rentals. Fit a random forest approximation for the prediction of bike rentals (**cnt**). Use the partial dependence plot to visualize the relationships the model learned. Use the slides shown in class as model.  
